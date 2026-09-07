@@ -481,8 +481,3 @@ Allure 文档：https://allurereport.org/docs/
 项目 GitHub：https://github.com/chaselzha/pytest-api-framework
 
 Happy Testing! 🚀
-
-text
-
----
-
