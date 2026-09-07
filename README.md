@@ -64,45 +64,48 @@
 ---
 
 ## <span id="project-structure">📁 项目结构</span>
-pytest-api-framework/
-├── .github/workflows/ # GitHub Actions CI/CD
-│ └── test.yml
-├── config/ # 配置管理
-│ ├── init.py
-│ └── settings.py # 多环境配置
-├── common/ # 公共模块
-│ ├── init.py
-│ ├── client.py # HTTP 客户端（含脱敏、重试）
-│ ├── logger.py # 日志系统
-│ └── utils.py # 工具函数（含 Schema 校验）
-├── schemas/ # JSON Schema 定义
-│ ├── post_schema.json
-│ ├── user_schema.json
-│ └── comment_schema.json
-├── testdata/ # 测试数据
-│ ├── user_data.yaml
-│ └── jsonplaceholder_data.yaml
-├── tests/ # 测试用例
-│ ├── init.py
-│ ├── conftest.py # Pytest Fixtures
-│ ├── test_jsonplaceholder_api.py # JSONPlaceholder 测试 (27)
-│ ├── test_api_chain.py # 接口关联测试 (10)
-│ └── test_schema_validation.py # Schema 校验测试 (5)
-├── reports/ # 测试报告
-│ ├── allure-reports/ # Allure 报告（带时间戳）
-│ ├── allure-results/ # Allure 数据
-│ ├── errors/ # 失败保存目录
-│ └── report.html # HTML 测试报告
-├── logs/ # 日志文件（含时分秒）
-├── .env # 环境变量配置
-├── requirements.txt # 依赖清单
-├── pytest.ini # Pytest 配置
-├── run.py # 测试执行入口
-├── run_allure.py # Allure 报告执行器
-├── Jenkinsfile # Jenkins Pipeline
-└── README.md # 项目说明
 
-text
+```text
+pytest-api-framework/
+├── .github/
+│   └── workflows/
+│       └── test.yml                 # GitHub Actions CI/CD
+├── config/
+│   ├── __init__.py
+│   └── settings.py                  # 多环境配置
+├── common/
+│   ├── __init__.py
+│   ├── client.py                    # HTTP 客户端（含脱敏、重试）
+│   ├── logger.py                    # 日志系统
+│   └── utils.py                     # 工具函数（含 Schema 校验）
+├── schemas/
+│   ├── post_schema.json             # 文章 Schema
+│   ├── user_schema.json             # 用户 Schema
+│   └── comment_schema.json          # 评论 Schema
+├── testdata/
+│   ├── __init__.py
+│   ├── user_data.yaml               # 用户测试数据
+│   └── jsonplaceholder_data.yaml    # JSONPlaceholder 测试数据
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py                  # Pytest Fixtures
+│   ├── test_jsonplaceholder_api.py  # JSONPlaceholder 测试 (27)
+│   ├── test_api_chain.py            # 接口关联测试 (10)
+│   └── test_schema_validation.py    # Schema 校验测试 (5)
+├── reports/
+│   ├── allure-reports/              # Allure 报告（带时间戳）
+│   ├── allure-results/              # Allure 数据
+│   ├── errors/                      # 失败保存目录
+│   └── report.html                  # HTML 测试报告
+├── logs/                            # 日志文件（含时分秒）
+├── .env                             # 环境变量配置
+├── requirements.txt                 # 依赖清单
+├── pytest.ini                       # Pytest 配置
+├── run.py                           # 测试执行入口
+├── run_allure.py                    # Allure 报告执行器
+├── Jenkinsfile                      # Jenkins Pipeline
+└── README.md                        # 项目说明
+```
 
 ---
 
