@@ -1,10 +1,11 @@
 # Pytest API 自动化测试框架
 
-基于 Python + Pytest + Requests 构建的企业级 API 自动化测试框架，支持多环境配置、Allure 报告、CI/CD 集成。
+基于 Python + Pytest + Requests 构建的企业级 API 自动化测试框架，支持多环境配置、Allure 报告、可视化测试平台、CI/CD 集成。
 
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11-blue)](https://www.python.org/)
 [![Pytest](https://img.shields.io/badge/Pytest-7.4.3-green)](https://docs.pytest.org/)
 [![Allure](https://img.shields.io/badge/Allure-2.29.0-orange)](https://allurereport.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-lightblue)](https://flask.palletsprojects.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
@@ -12,14 +13,15 @@
 ## 📋 目录
 
 - [项目简介](#project-intro)
+- [核心特性](#features)
 - [技术栈](#tech-stack)
 - [项目结构](#project-structure)
 - [快速开始](#quick-start)
 - [运行测试](#run-tests)
+- [可视化测试平台](#web-platform)
 - [测试报告](#test-reports)
 - [环境配置](#env-config)
 - [CI/CD 集成](#cicd-integration)
-- [优化特性](#features)
 - [常见问题](#faq)
 - [贡献指南](#contributing)
 - [许可证](#license)
@@ -43,7 +45,63 @@
 | 📝 **日志系统** | 完整的请求/响应日志（含脱敏） |
 | 📊 **Allure 报告** | 美观的测试报告，支持历史追踪 |
 | 🌍 **多环境配置** | 支持 dev/test/prod 环境切换 |
+| 🖥️ **可视化平台** | Flask Web 界面管理测试用例和执行测试 |
 | 🚀 **CI/CD 集成** | GitHub Actions / Jenkins 开箱即用 |
+
+---
+
+## <span id="features">✨ 核心特性</span>
+
+### 1. 数据脱敏
+
+敏感信息自动脱敏，保护数据安全：
+
+| 字段 | 脱敏前 | 脱敏后 |
+|------|--------|--------|
+| password | `"password":"123456"` | `"password":"***"` |
+| token | `"token":"abc123"` | `"token":"***"` |
+| phone | `"phone":"13812345678"` | `"phone":"138****5678"` |
+
+### 2. 耗时监控
+
+接口响应时间自动监控：
+
+| 耗时 | 日志级别 |
+|------|----------|
+| < 3s | INFO |
+| 3s ~ 5s | WARNING ⚠️ |
+| > 5s | ERROR ❌ |
+
+### 3. JSON Schema 校验
+
+使用 JSON Schema 校验接口返回数据结构：
+
+```python
+from common.utils import validate_json_schema
+
+result = validate_json_schema(response.json(), "post_schema.json")
+assert result["valid"], result["message"]
+```
+
+### 4. 失败自动保存
+
+测试失败时自动保存请求和响应信息：
+
+```
+reports/errors/test_name_20260907_220530/
+├── request.json
+└── response.json
+```
+
+### 5. 可视化测试平台
+
+基于 Flask 的 Web 界面，支持：
+- 📋 查看测试用例列表
+- 📁 添加/删除测试套件
+- 📋 添加/删除测试用例
+- ▶️ 一键执行测试
+- 📊 查看执行历史和统计
+- 📈 查看测试报告
 
 ---
 
@@ -60,6 +118,9 @@
 | **Jsonschema** | 4.20.0 | Schema 校验 |
 | **Faker** | 20.1.0 | 测试数据生成 |
 | **python-dotenv** | 1.0.0 | 环境变量管理 |
+| **Flask** | 2.3.3 | Web 框架 |
+| **Flask-SQLAlchemy** | 3.1.1 | ORM 数据库 |
+| **Flask-CORS** | 4.0.0 | 跨域支持 |
 
 ---
 
@@ -67,44 +128,60 @@
 
 ```text
 pytest-api-framework/
-├── .github/
-│   └── workflows/
-│       └── test.yml                 # GitHub Actions CI/CD
-├── config/
+├── .github/workflows/          # GitHub Actions CI/CD
+│   └── test.yml
+├── config/                     # 配置管理
 │   ├── __init__.py
-│   └── settings.py                  # 多环境配置
-├── common/
+│   └── settings.py             # 多环境配置
+├── common/                     # 公共模块
 │   ├── __init__.py
-│   ├── client.py                    # HTTP 客户端（含脱敏、重试）
-│   ├── logger.py                    # 日志系统
-│   └── utils.py                     # 工具函数（含 Schema 校验）
-├── schemas/
-│   ├── post_schema.json             # 文章 Schema
-│   ├── user_schema.json             # 用户 Schema
-│   └── comment_schema.json          # 评论 Schema
-├── testdata/
+│   ├── client.py               # HTTP 客户端（含脱敏、重试）
+│   ├── logger.py               # 日志系统
+│   └── utils.py                # 工具函数（含 Schema 校验）
+├── schemas/                    # JSON Schema 定义
+│   ├── post_schema.json
+│   ├── user_schema.json
+│   └── comment_schema.json
+├── testdata/                   # 测试数据
+│   ├── user_data.yaml
+│   └── jsonplaceholder_data.yaml
+├── tests/                      # 测试用例
 │   ├── __init__.py
-│   ├── user_data.yaml               # 用户测试数据
-│   └── jsonplaceholder_data.yaml    # JSONPlaceholder 测试数据
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py                  # Pytest Fixtures
+│   ├── conftest.py             # Pytest Fixtures
 │   ├── test_jsonplaceholder_api.py  # JSONPlaceholder 测试 (27)
-│   ├── test_api_chain.py            # 接口关联测试 (10)
+│   ├── test_api_chain.py       # 接口关联测试 (10)
 │   └── test_schema_validation.py    # Schema 校验测试 (5)
-├── reports/
-│   ├── allure-reports/              # Allure 报告（带时间戳）
-│   ├── allure-results/              # Allure 数据
-│   ├── errors/                      # 失败保存目录
-│   └── report.html                  # HTML 测试报告
-├── logs/                            # 日志文件（含时分秒）
-├── .env                             # 环境变量配置
-├── requirements.txt                 # 依赖清单
-├── pytest.ini                       # Pytest 配置
-├── run.py                           # 测试执行入口
-├── run_allure.py                    # Allure 报告执行器
-├── Jenkinsfile                      # Jenkins Pipeline
-└── README.md                        # 项目说明
+├── web/                        # 可视化测试平台
+│   ├── __init__.py
+│   ├── app.py                  # Flask 应用入口
+│   ├── config.py               # Web 配置
+│   ├── models.py               # 数据库模型
+│   ├── routes/                 # API 路由
+│   │   ├── __init__.py
+│   │   ├── project_routes.py   # 项目管理 API
+│   │   ├── report_routes.py    # 报告 API
+│   │   └── test_routes.py      # 测试管理 API
+│   ├── services/               # 服务层
+│   │   ├── __init__.py
+│   │   └── test_runner.py      # 测试执行服务
+│   ├── templates/              # HTML 模板
+│   │   └── index.html          # 前端页面
+│   └── data/                   # 数据库
+│       └── test_platform.db    # SQLite 数据库
+├── reports/                    # 测试报告
+│   ├── allure-reports/         # Allure 报告（带时间戳）
+│   ├── allure-results/         # Allure 数据
+│   ├── errors/                 # 失败保存目录
+│   └── report.html             # HTML 测试报告
+├── logs/                       # 日志文件（含时分秒）
+├── .env                        # 环境变量配置
+├── requirements.txt            # 依赖清单
+├── pytest.ini                  # Pytest 配置
+├── run.py                      # 测试执行入口
+├── run_web.py                  # Web 平台启动入口
+├── run_allure.py               # Allure 报告执行器
+├── Jenkinsfile                 # Jenkins Pipeline
+└── README.md                   # 项目说明
 ```
 
 ---
@@ -136,9 +213,8 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
+# 编辑 .env 文件，配置你的 API 地址
 ```
-
-编辑 `.env` 文件：
 
 ```env
 API_ENV=test
@@ -215,11 +291,51 @@ python run_allure.py --clean-all
 
 ---
 
+## <span id="web-platform">🖥️ 可视化测试平台</span>
+
+### 启动 Web 平台
+
+```bash
+# 启动可视化测试平台
+python run_web.py --port 5001
+
+# 指定地址和端口
+python run_web.py --host 0.0.0.0 --port 8080
+```
+
+### 访问平台
+
+浏览器打开：`http://localhost:5001`
+
+### 平台功能
+
+| 功能 | 说明 |
+|------|------|
+| 📊 **统计面板** | 显示总测试数、通过/失败数、通过率 |
+| ▶️ **执行测试** | 选择测试套件一键执行 |
+| 📋 **测试用例管理** | 查看、添加、删除测试用例 |
+| 📁 **测试套件管理** | 查看、添加、删除测试套件 |
+| 📋 **执行日志** | 实时查看测试执行日志 |
+| 📊 **执行历史** | 查看历史执行记录和通过率 |
+| 📈 **测试报告** | 在线查看 HTML 测试报告 |
+
+### API 接口
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/api/projects` | GET/POST | 项目管理 |
+| `/api/tests/suites` | GET/POST/DELETE | 套件管理 |
+| `/api/tests/cases` | GET/POST/DELETE | 用例管理 |
+| `/api/tests/suites/<id>/run` | POST | 执行测试 |
+| `/api/tests/runs` | GET | 执行历史 |
+| `/api/reports/<id>/html` | GET | 查看报告 |
+| `/api/reports/statistics` | GET | 统计信息 |
+
+---
+
 ## <span id="test-reports">📈 测试报告</span>
 
 ### Allure 报告（推荐）
-
-Allure 提供美观的测试报告，支持历史追踪、分类统计、步骤详情。
 
 ```bash
 # 安装 Allure (macOS)
@@ -319,68 +435,26 @@ https://github.com/chaselzha/pytest-api-framework/actions
 
 **配置文件**：`Jenkinsfile`
 
+**参数说明**：
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `BRANCH` | String | `main` | Git 分支 |
+| `TEST_MARKER` | Choice | `all` | 测试标记 |
+| `SKIP_INSTALL` | Boolean | `false` | 跳过依赖安装 |
+| `DEPLOY_REPORT` | Boolean | `false` | 是否部署报告 |
+
+**触发方式**：
+
 ```bash
-# 触发 Jenkins 构建
+# API 触发
 curl -X POST "https://jenkins.example.com/job/api-test/buildWithParameters" \
   --user "username:api_token" \
   --data-urlencode "BRANCH=main" \
   --data-urlencode "TEST_MARKER=smoke"
 ```
 
-### 本地 CI 模拟
-
-```bash
-# 给脚本添加执行权限
-chmod +x scripts/local_ci.sh
-
-# 运行本地 CI
-./scripts/local_ci.sh
-```
-
----
-
-## <span id="features">✨ 优化特性</span>
-
-### 1. 数据脱敏
-
-敏感信息自动脱敏，保护数据安全：
-
-| 字段 | 脱敏前 | 脱敏后 |
-|------|--------|--------|
-| password | `"password":"123456"` | `"password":"***"` |
-| token | `"token":"abc123"` | `"token":"***"` |
-| phone | `"phone":"13812345678"` | `"phone":"138****5678"` |
-
-### 2. 耗时监控
-
-接口响应时间自动监控：
-
-| 耗时 | 日志级别 |
-|------|----------|
-| < 3s | INFO |
-| 3s ~ 5s | WARNING ⚠️ |
-| > 5s | ERROR ❌ |
-
-### 3. JSON Schema 校验
-
-使用 JSON Schema 校验接口返回数据结构：
-
-```python
-from common.utils import validate_json_schema
-
-result = validate_json_schema(response.json(), "post_schema.json")
-assert result["valid"], result["message"]
-```
-
-### 4. 失败自动保存
-
-测试失败时自动保存请求和响应信息：
-
-```
-reports/errors/test_name_20260907_220530/
-├── request.json
-└── response.json
-```
+**详细配置**：参见 [JENKINS_SETUP.md](JENKINS_SETUP.md)
 
 ---
 
@@ -394,7 +468,7 @@ reports/errors/test_name_20260907_220530/
 
 ```python
 class TestConfig(Config):
-    BASE_URL = "https://your-api-server.com"  # 改为你的 API 地址
+    BASE_URL = "https://your-api-server.com"
 ```
 
 ### 2. Allure 报告未生成
@@ -414,11 +488,15 @@ sudo apt-get install allure
 scoop install allure
 ```
 
-### 3. 测试数据找不到
+### 3. 可视化平台启动失败
 
-**问题**：测试数据文件不存在
+**问题**：端口被占用
 
-**解决**：确保 `testdata/` 目录下的 YAML/JSON 文件存在
+**解决**：使用其他端口启动
+
+```bash
+python run_web.py --port 5002
+```
 
 ### 4. 依赖安装失败
 
@@ -431,20 +509,15 @@ pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt --no-cache-dir
 ```
 
-### 5. JSON Schema 校验失败
+### 5. 数据库表不存在
 
-**问题**：返回数据不符合 Schema
+**问题**：`no such table: test_projects`
 
-**解决**：检查 `schemas/*.json` 文件定义是否正确
+**解决**：创建数据库表
 
-### 6. GitHub Actions 运行失败
-
-**问题**：Action 运行报错
-
-**解决**：
-- 检查 `.github/workflows/test.yml` 语法
-- 确认 `requirements.txt` 中所有依赖可安装
-- 查看 Actions 日志定位具体错误
+```bash
+python -c "from web.app import app; from web.models import db; with app.app_context(): db.create_all(); print('✅ 表创建成功')"
+```
 
 ---
 
