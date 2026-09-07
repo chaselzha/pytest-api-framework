@@ -477,7 +477,7 @@ pip install -r requirements.txt --no-cache-dir
 
 ## 📞 联系方式
 
-- **作者**：Chasel Zhao
+- **作者**：Chasel Zha
 - **GitHub**：[chaselzha](https://github.com/chaselzha)
 - **项目地址**：[pytest-api-framework](https://github.com/chaselzha/pytest-api-framework)
 

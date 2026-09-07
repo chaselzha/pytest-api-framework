@@ -1,0 +1,12 @@
+# Jenkins 必需插件列表
+# 使用插件管理器安装
+
+allure-jenkins
+htmlpublisher
+email-ext
+git
+pipeline
+pipeline-github-lib
+github-branch-source
+docker-workflow
+dingding-notifications
