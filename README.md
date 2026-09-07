@@ -116,28 +116,40 @@ pytest-api-framework/
 ```bash
 git clone git@github.com:chaselzha/pytest-api-framework.git
 cd pytest-api-framework
-2. 创建虚拟环境
-bash
+```
+
+### 2. 创建虚拟环境
+
+```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
-3. 安装依赖
-bash
+```
+
+### 3. 安装依赖
+
+```bash
 pip install --upgrade pip
 pip install -r requirements.txt
-4. 配置环境
-复制并修改环境配置文件：
+```
 
-bash
+### 4. 配置环境
+
+```bash
 cp .env.example .env
-# 编辑 .env 文件，配置你的 API 地址
-env
-# .env 文件示例
+```
+
+编辑 `.env` 文件：
+
+```env
 API_ENV=test
 TEST_BASE_URL=https://jsonplaceholder.typicode.com
 REQUEST_TIMEOUT=30
 LOG_LEVEL=INFO
-5. 运行测试
-bash
+```
+
+### 5. 运行测试
+
+```bash
 # 运行所有测试
 pytest tests/ -v
 
@@ -146,17 +158,26 @@ pytest tests/ -m smoke -v
 
 # 运行指定测试文件
 pytest tests/test_jsonplaceholder_api.py -v
-<span id="run-tests">📊 运行测试</span>
-基本命令
-命令	说明
-pytest tests/ -v	运行所有测试（详细输出）
-pytest tests/ -m smoke	运行冒烟测试
-pytest tests/ -m regression	运行回归测试
-pytest tests/test_xxx.py	运行指定测试文件
-pytest tests/ -n 4	并行执行（4 进程）
-pytest tests/ --maxfail=5	失败 5 次后停止
-使用 run.py
-bash
+```
+
+---
+
+## <span id="run-tests">📊 运行测试</span>
+
+### 基本命令
+
+| 命令 | 说明 |
+|------|------|
+| `pytest tests/ -v` | 运行所有测试（详细输出） |
+| `pytest tests/ -m smoke` | 运行冒烟测试 |
+| `pytest tests/ -m regression` | 运行回归测试 |
+| `pytest tests/test_xxx.py` | 运行指定测试文件 |
+| `pytest tests/ -n 4` | 并行执行（4 进程） |
+| `pytest tests/ --maxfail=5` | 失败 5 次后停止 |
+
+### 使用 run.py
+
+```bash
 # 运行所有测试
 python run.py
 
@@ -168,8 +189,11 @@ python run.py -n 4
 
 # 生成 HTML 报告
 python run.py --html=reports/report.html
-使用 run_allure.py
-bash
+```
+
+### 使用 run_allure.py
+
+```bash
 # 运行测试并生成 Allure 报告
 python run_allure.py --open
 
@@ -187,11 +211,17 @@ python run_allure.py --list
 
 # 清理所有数据（慎用）
 python run_allure.py --clean-all
-<span id="test-reports">📈 测试报告</span>
-Allure 报告（推荐）
+```
+
+---
+
+## <span id="test-reports">📈 测试报告</span>
+
+### Allure 报告（推荐）
+
 Allure 提供美观的测试报告，支持历史追踪、分类统计、步骤详情。
 
-bash
+```bash
 # 安装 Allure (macOS)
 brew install allure
 
@@ -202,23 +232,31 @@ python run_allure.py --open
 pytest tests/ --alluredir=allure-results
 allure generate allure-results -o allure-report --clean
 allure open allure-report
-报告地址：reports/allure-reports/latest/index.html
+```
 
-HTML 报告
-bash
+**报告地址**：`reports/allure-reports/latest/index.html`
+
+### HTML 报告
+
+```bash
 # 生成 HTML 报告
 pytest tests/ --html=reports/report.html --self-contained-html
-报告地址：reports/report.html
+```
 
-日志文件
-日志文件保存在 logs/ 目录，按天轮转，文件名包含时分秒：
+**报告地址**：`reports/report.html`
 
-text
+### 日志文件
+
+日志文件保存在 `logs/` 目录，按天轮转，文件名包含时分秒：
+
+```
 logs/
 ├── api_test_2026-09-07_22-30-45.log
 ├── api_test_2026-09-07_23-15-20.log
 └── api_error_2026-09-07_22-30-45.log
-text
+```
+
+---
 
 ## <span id="env-config">🌍 环境配置</span>
 
@@ -241,96 +279,131 @@ API_ENV=test
 TEST_BASE_URL=https://jsonplaceholder.typicode.com
 REQUEST_TIMEOUT=30
 LOG_LEVEL=INFO
-方式二：环境变量
+```
 
-bash
+**方式二：环境变量**
+
+```bash
 API_ENV=dev pytest tests/ -v
-方式三：settings.py 硬编码
+```
 
-python
+**方式三：settings.py 硬编码**
+
+```python
 # config/settings.py
 ENV = "test"  # 默认值
-<span id="cicd-integration">🔄 CI/CD 集成</span>
-GitHub Actions
+```
+
+---
+
+## <span id="cicd-integration">🔄 CI/CD 集成</span>
+
+### GitHub Actions
+
 项目已配置 GitHub Actions 工作流，每次推送代码自动运行测试。
 
-配置文件：.github/workflows/test.yml
+**配置文件**：`.github/workflows/test.yml`
 
-触发条件：
+**触发条件**：
+- 推送 `main` / `develop` 分支
+- 创建 Pull Request
+- 每天 2:00 定时执行
+- 手动触发
 
-推送 main / develop 分支
-
-创建 Pull Request
-
-每天 2:00 定时执行
-
-手动触发
-
-查看结果：
-
-text
+**查看结果**：
+```
 https://github.com/chaselzha/pytest-api-framework/actions
-Jenkins
-配置文件：Jenkinsfile
+```
 
-bash
+### Jenkins
+
+**配置文件**：`Jenkinsfile`
+
+```bash
 # 触发 Jenkins 构建
 curl -X POST "https://jenkins.example.com/job/api-test/buildWithParameters" \
   --user "username:api_token" \
   --data-urlencode "BRANCH=main" \
   --data-urlencode "TEST_MARKER=smoke"
-本地 CI 模拟
-bash
+```
+
+### 本地 CI 模拟
+
+```bash
 # 给脚本添加执行权限
 chmod +x scripts/local_ci.sh
 
 # 运行本地 CI
 ./scripts/local_ci.sh
-<span id="features">✨ 优化特性</span>
-1. 数据脱敏
+```
+
+---
+
+## <span id="features">✨ 优化特性</span>
+
+### 1. 数据脱敏
+
 敏感信息自动脱敏，保护数据安全：
 
-字段	脱敏前	脱敏后
-password	"password":"123456"	"password":"***"
-token	"token":"abc123"	"token":"***"
-phone	"phone":"13812345678"	"phone":"138****5678"
-2. 耗时监控
+| 字段 | 脱敏前 | 脱敏后 |
+|------|--------|--------|
+| password | `"password":"123456"` | `"password":"***"` |
+| token | `"token":"abc123"` | `"token":"***"` |
+| phone | `"phone":"13812345678"` | `"phone":"138****5678"` |
+
+### 2. 耗时监控
+
 接口响应时间自动监控：
 
-耗时	日志级别
-< 3s	INFO
-3s ~ 5s	WARNING ⚠️
-> 5s	ERROR ❌
-3. JSON Schema 校验
+| 耗时 | 日志级别 |
+|------|----------|
+| < 3s | INFO |
+| 3s ~ 5s | WARNING ⚠️ |
+| > 5s | ERROR ❌ |
+
+### 3. JSON Schema 校验
+
 使用 JSON Schema 校验接口返回数据结构：
 
-python
+```python
 from common.utils import validate_json_schema
 
 result = validate_json_schema(response.json(), "post_schema.json")
 assert result["valid"], result["message"]
-4. 失败自动保存
+```
+
+### 4. 失败自动保存
+
 测试失败时自动保存请求和响应信息：
 
-text
+```
 reports/errors/test_name_20260907_220530/
 ├── request.json
 └── response.json
-<span id="faq">❓ 常见问题</span>
-1. 测试连接失败
-问题：连接 test-api.example.com 失败
+```
 
-解决：修改 config/settings.py 中的 BASE_URL
+---
 
-python
+## <span id="faq">❓ 常见问题</span>
+
+### 1. 测试连接失败
+
+**问题**：连接 `test-api.example.com` 失败
+
+**解决**：修改 `config/settings.py` 中的 `BASE_URL`
+
+```python
 class TestConfig(Config):
     BASE_URL = "https://your-api-server.com"  # 改为你的 API 地址
-2. Allure 报告未生成
-问题：allure: command not found
+```
 
-解决：安装 Allure
+### 2. Allure 报告未生成
 
-bash
+**问题**：`allure: command not found`
+
+**解决**：安装 Allure
+
+```bash
 # macOS
 brew install allure
 
@@ -339,69 +412,83 @@ sudo apt-get install allure
 
 # Windows (Scoop)
 scoop install allure
-3. 测试数据找不到
-问题：测试数据文件不存在
+```
 
-解决：确保 testdata/ 目录下的 YAML/JSON 文件存在
+### 3. 测试数据找不到
 
-4. 依赖安装失败
-问题：pip 安装依赖失败
+**问题**：测试数据文件不存在
 
-解决：升级 pip 和 setuptools
+**解决**：确保 `testdata/` 目录下的 YAML/JSON 文件存在
 
-bash
+### 4. 依赖安装失败
+
+**问题**：pip 安装依赖失败
+
+**解决**：升级 pip 和 setuptools
+
+```bash
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt --no-cache-dir
-5. JSON Schema 校验失败
-问题：返回数据不符合 Schema
+```
 
-解决：检查 schemas/*.json 文件定义是否正确
+### 5. JSON Schema 校验失败
 
-6. GitHub Actions 运行失败
-问题：Action 运行报错
+**问题**：返回数据不符合 Schema
 
-解决：
+**解决**：检查 `schemas/*.json` 文件定义是否正确
 
-检查 .github/workflows/test.yml 语法
+### 6. GitHub Actions 运行失败
 
-确认 requirements.txt 中所有依赖可安装
+**问题**：Action 运行报错
 
-查看 Actions 日志定位具体错误
+**解决**：
+- 检查 `.github/workflows/test.yml` 语法
+- 确认 `requirements.txt` 中所有依赖可安装
+- 查看 Actions 日志定位具体错误
 
-<span id="contributing">🤝 贡献指南</span>
+---
+
+## <span id="contributing">🤝 贡献指南</span>
+
 欢迎贡献代码、提出 Issue 或提交 Pull Request！
 
-贡献流程
-Fork 本仓库
+### 贡献流程
 
-创建特性分支 (git checkout -b feature/amazing-feature)
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
 
-提交更改 (git commit -m 'Add amazing feature')
+### 代码规范
 
-推送到分支 (git push origin feature/amazing-feature)
+- 遵循 PEP 8 编码规范
+- 添加必要的注释和文档
+- 编写单元测试覆盖新功能
+- 确保所有测试通过
 
-创建 Pull Request
+---
 
-代码规范
-遵循 PEP 8 编码规范
+## <span id="license">📄 许可证</span>
 
-添加必要的注释和文档
+本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
 
-编写单元测试覆盖新功能
+---
 
-确保所有测试通过
+## 📞 联系方式
 
-<span id="license">📄 许可证</span>
-本项目采用 MIT 许可证。详见 LICENSE 文件。
+- **作者**：Chasel Zhao
+- **GitHub**：[chaselzha](https://github.com/chaselzha)
+- **项目地址**：[pytest-api-framework](https://github.com/chaselzha/pytest-api-framework)
 
-📞 联系方式
-作者：Chasel Zhao
+---
 
-GitHub：chaselzha
+## ⭐ 支持
 
-项目地址：pytest-api-framework
-
-⭐ 支持
 如果这个项目对你有帮助，请给个 Star ⭐ 支持一下！
 
+[![Star](https://img.shields.io/github/stars/chaselzha/pytest-api-framework?style=social)](https://github.com/chaselzha/pytest-api-framework)
 
+---
+
+**Happy Testing! 🚀**
