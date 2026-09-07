@@ -1,0 +1,25 @@
+# JSONPlaceholder 测试数据
+posts:
+  expected_count: 100
+  max_per_user: 10
+  sample_post:
+    id: 1
+    userId: 1
+    title: "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
+    body: "quia et suscipit..."
+
+users:
+  expected_count: 10
+  user_names:
+    1: "Leanne Graham"
+    2: "Ervin Howell"
+    3: "Clementine Bauch"
+
+comments:
+  expected_per_post: 5
+
+albums:
+  expected_per_user: 10
+
+todos:
+  expected_per_user: 20

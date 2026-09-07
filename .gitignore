@@ -1,0 +1,27 @@
+# 虚拟环境
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# 日志
+logs/
+*.log
+
+# 报告
+reports/
+*.html
+
+# 缓存
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# 环境变量（包含敏感信息）
+.env
+.env.local
+.env.*.local
