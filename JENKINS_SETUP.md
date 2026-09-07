@@ -61,26 +61,28 @@ allure --version
 
 # 清理
 rm allure-2.29.0.zip
-macOS
-bash
+```
+
+### macOS
+
+```bash
 # 使用 Homebrew 安装
 brew install allure
 
 # 验证安装
 allure --version
-Windows
-bash
+```
+
+### Windows
+
+```bash
 # 使用 Scoop 安装
 scoop install allure
 
 # 验证安装
 allure --version
+```
 
-
-
-### 第 2 部分：复制以下内容（安装 Jenkins 插件）
-
-```markdown
 ---
 
 ## <span id="install-plugins">2️⃣ 安装 Jenkins 插件</span>
@@ -115,12 +117,8 @@ wget https://github.com/jenkinsci/plugin-installation-manager-tool/releases/late
 java -jar jenkins-plugin-manager-2.12.11.jar \
   --plugin-file jenkins_plugins.txt \
   --war /usr/share/jenkins/jenkins.war
+```
 
-
-
-### 第 3 部分：复制以下内容（配置 Jenkins 任务）
-
-```markdown
 ---
 
 ## <span id="configure-job">3️⃣ 配置 Jenkins 任务</span>
@@ -165,6 +163,7 @@ Jenkinsfile 已包含以下参数，会自动显示在构建页面：
 | `TEST_MARKER` | Choice | `all` | 测试标记 |
 | `SKIP_INSTALL` | Boolean | `false` | 跳过依赖安装 |
 | `DEPLOY_REPORT` | Boolean | `false` | 是否部署报告 |
+
 ---
 
 ## <span id="configure-credentials">4️⃣ 配置凭证</span>
@@ -204,6 +203,7 @@ Jenkinsfile 已包含以下参数，会自动显示在构建页面：
    - **SSL/TLS**：勾选 `Use SSL`
    - **端口**：`465`
 4. 点击 **保存**
+
 ---
 
 ## <span id="trigger-build">5️⃣ 触发构建</span>
@@ -225,8 +225,11 @@ curl -X POST \
   --data-urlencode "BRANCH=main" \
   --data-urlencode "TEST_MARKER=smoke" \
   --data-urlencode "DEPLOY_REPORT=false"
+```
 
-方式三：使用脚本触发
+### 方式三：使用脚本触发
+
+```bash
 # 设置环境变量
 export JENKINS_URL="https://jenkins.example.com"
 export JENKINS_USER="your-username"
@@ -236,24 +239,17 @@ export TEST_MARKER="smoke"
 
 # 执行触发脚本
 ./scripts/jenkins_trigger.sh
+```
 
-方式四：GitHub Webhook 触发
-在 Jenkins 任务配置中，勾选 GitHub hook trigger for GITScm polling
+### 方式四：GitHub Webhook 触发
 
-在 GitHub 仓库设置 Webhook：
+1. 在 Jenkins 任务配置中，勾选 **GitHub hook trigger for GITScm polling**
+2. 在 GitHub 仓库设置 Webhook：
+   - **Payload URL**：`https://jenkins.example.com/github-webhook/`
+   - **Content type**：`application/json`
+   - **Events**：`Just the push event`
+3. 保存设置
 
-Payload URL：https://jenkins.example.com/github-webhook/
-
-Content type：application/json
-
-Events：Just the push event
-
-保存设置
-
-
-### 第 6 部分：复制以下内容（查看报告）
-
-```markdown
 ---
 
 ## <span id="view-reports">6️⃣ 查看报告</span>
@@ -316,10 +312,15 @@ emailext(
     """,
     to: 'team@example.com'
 )
-修改收件人：将 team@example.com 改为实际邮箱
+```
 
-钉钉通知（可选）
+**修改收件人**：将 `team@example.com` 改为实际邮箱
+
+### 钉钉通知（可选）
+
 安装钉钉插件后，添加以下配置：
+
+```groovy
 dingtalk(
     robot: 'default',
     type: 'markdown',
@@ -332,6 +333,23 @@ dingtalk(
         > **查看**: ${env.BUILD_URL}
     """
 )
+```
+
+### 企业微信通知（可选）
+
+```groovy
+wechatWork(
+    webhookUrl: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx',
+    msgType: 'markdown',
+    content: """
+        ## ✅ 构建成功
+        > 项目: ${env.JOB_NAME}
+        > 构建: #${env.BUILD_NUMBER}
+        > 分支: ${params.BRANCH}
+        > [查看详情](${env.BUILD_URL})
+    """
+)
+```
 
 ---
 
@@ -356,11 +374,15 @@ sudo apt-get install allure
 
 # 检查 Jenkins 中 Allure 插件是否安装
 # 管理 Jenkins → 插件管理 → 已安装
+```
 
-Q2: 无法拉取 GitHub 代码
-错误：Permission denied (publickey)
+### Q2: 无法拉取 GitHub 代码
 
-解决：
+**错误**：`Permission denied (publickey)`
+
+**解决**：
+
+```bash
 # 测试 SSH 连接
 ssh -T git@github.com
 
@@ -370,30 +392,30 @@ cat ~/.ssh/id_rsa.pub
 
 # 将公钥添加到 GitHub
 # GitHub → Settings → SSH and GPG keys → New SSH Key
+```
 
-Q3: 邮件通知未发送
-错误：Failed to send email
+### Q3: 邮件通知未发送
 
-解决：
+**错误**：`Failed to send email`
 
-检查邮件服务器配置
+**解决**：
 
-检查发件人邮箱权限
+1. 检查邮件服务器配置
+2. 检查发件人邮箱权限
+3. 检查防火墙设置
+4. 使用测试邮件功能验证
 
-检查防火墙设置
+### Q4: 构建参数未生效
 
-使用测试邮件功能验证
+**问题**：参数值没有传递给 Pipeline
 
-Q4: 构建参数未生效
-问题：参数值没有传递给 Pipeline
+**解决**：
 
-解决：
+1. 确保 Jenkinsfile 中使用了 `params.参数名`
+2. 检查参数名称拼写
+3. 在 Pipeline 开始处打印参数值调试
 
-确保 Jenkinsfile 中使用了 params.参数名
-
-检查参数名称拼写
-
-在 Pipeline 开始处打印参数值调试
+```groovy
 pipeline {
     stages {
         stage('Debug') {
@@ -404,27 +426,39 @@ pipeline {
         }
     }
 }
+```
 
-Q5: 构建超时
-问题：长时间运行导致构建超时
+### Q5: 构建超时
 
-解决：添加超时配置
+**问题**：长时间运行导致构建超时
+
+**解决**：添加超时配置
+
+```groovy
 options {
     timeout(time: 30, unit: 'MINUTES')
 }
+```
 
-Q6: 并行构建冲突
-问题：多个构建同时运行时产生冲突
+### Q6: 并行构建冲突
 
-解决：禁用并发构建
+**问题**：多个构建同时运行时产生冲突
+
+**解决**：禁用并发构建
+
+```groovy
 options {
     disableConcurrentBuilds()
 }
+```
 
-Q7: 依赖安装失败
-问题：pip install 超时或失败
+### Q7: 依赖安装失败
 
-解决：
+**问题**：pip install 超时或失败
+
+**解决**：
+
+```groovy
 stage('环境准备') {
     steps {
         sh '''
@@ -433,11 +467,15 @@ stage('环境准备') {
         '''
     }
 }
+```
 
-Q8: 构建历史过多
-问题：构建历史占用大量磁盘空间
+### Q8: 构建历史过多
 
-解决：配置构建保留策略
+**问题**：构建历史占用大量磁盘空间
+
+**解决**：配置构建保留策略
+
+```groovy
 properties([
     buildDiscarder(
         logRotator(
@@ -447,13 +485,16 @@ properties([
         )
     )
 ])
+```
 
-📞 获取帮助
-Jenkins 文档：https://www.jenkins.io/doc/
+---
 
-Allure 文档：https://allurereport.org/docs/
+## 📞 获取帮助
 
-项目 GitHub：https://github.com/chaselzha/pytest-api-framework
+- **Jenkins 文档**：https://www.jenkins.io/doc/
+- **Allure 文档**：https://allurereport.org/docs/
+- **项目 GitHub**：https://github.com/chaselzha/pytest-api-framework
 
+---
 
-
+**Happy Testing! 🚀**
