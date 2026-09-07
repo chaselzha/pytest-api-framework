@@ -1,6 +1,3 @@
-"""
-测试执行服务
-"""
 import subprocess
 import sys
 import re
@@ -26,13 +23,17 @@ class TestRunner:
             try:
                 emit_log(self.run_id, 'info', '🚀 开始执行测试...')
                 
-                # 执行测试
+                # 生成带时间戳的报告文件名
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                report_filename = f"report_{self.run_id}_{timestamp}.html"
+                report_path = f"reports/{report_filename}"
+                
                 cmd = [
                     sys.executable, '-m', 'pytest',
                     'tests/test_jsonplaceholder_api.py',
                     '-v',
                     '--tb=short',
-                    f'--html=reports/report_{self.run_id}.html',
+                    f'--html={report_path}',
                     '--self-contained-html'
                 ]
                 
@@ -56,18 +57,20 @@ class TestRunner:
                         self.output.append(line)
                         emit_log(self.run_id, 'info', line.strip())
                         
-                        # 解析测试结果
                         if 'PASSED' in line:
                             passed += 1
                             emit_test_progress(self.run_id, 'passed')
-                            # 提取测试名称
-                            match = re.search(r'(\w+)\s+PASSED', line)
+                            match = re.search(r'(\w+)\[.*?\]\s+PASSED', line)
+                            if not match:
+                                match = re.search(r'(\w+)\s+PASSED', line)
                             if match:
                                 passed_tests.append(match.group(1))
                         elif 'FAILED' in line:
                             failed += 1
                             emit_test_progress(self.run_id, 'failed')
-                            match = re.search(r'(\w+)\s+FAILED', line)
+                            match = re.search(r'(\w+)\[.*?\]\s+FAILED', line)
+                            if not match:
+                                match = re.search(r'(\w+)\s+FAILED', line)
                             if match:
                                 failed_tests.append(match.group(1))
                 
@@ -81,28 +84,28 @@ class TestRunner:
                     test_run.passed = passed
                     test_run.failed = failed
                     test_run.total = passed + failed
-                    test_run.report_path = f'reports/report_{self.run_id}.html'
+                    test_run.report_path = report_path
                     db.session.commit()
                 
                 # 更新 TestCase 状态
                 suite = TestCase.query.filter_by(suite_id=self.suite_id).all()
                 for case in suite:
-                    # 检查用例是否在通过列表中
-                    if case.function_name in passed_tests or case.name in passed_tests:
+                    func_name = case.function_name or case.name
+                    is_passed = any(func_name in pt or pt in func_name for pt in passed_tests)
+                    is_failed = any(func_name in ft or ft in func_name for ft in failed_tests)
+                    if is_passed:
                         case.status = 'passed'
                         case.last_result = 'passed'
                         case.last_run_at = datetime.now()
-                    elif case.function_name in failed_tests or case.name in failed_tests:
+                    elif is_failed:
                         case.status = 'failed'
                         case.last_result = 'failed'
                         case.last_run_at = datetime.now()
-                    else:
-                        # 如果用例没有被执行到，保持 pending
-                        pass
                 db.session.commit()
                 
                 emit_log(self.run_id, 'info', f'✅ 测试执行完成！')
                 emit_log(self.run_id, 'info', f'📊 通过: {passed}, 失败: {failed}')
+                emit_log(self.run_id, 'info', f'📁 报告: {report_path}')
                 
             except Exception as e:
                 emit_log(self.run_id, 'error', f'❌ 执行失败: {str(e)}')
