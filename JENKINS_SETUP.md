@@ -75,28 +75,39 @@ scoop install allure
 
 # 验证安装
 allure --version
-<span id="install-plugins">2️⃣ 安装 Jenkins 插件</span>
-方式一：通过 Jenkins 管理界面
-打开 Jenkins → 管理 Jenkins → 插件管理
 
-切换到 可选插件 选项卡
 
-搜索并安装以下插件：
 
-插件名称	必需
-Allure Jenkins Plugin	✅ 是
-HTML Publisher Plugin	✅ 是
-Email Extension Plugin	✅ 是
-Pipeline	✅ 是
-Git	✅ 是
-GitHub Integration Plugin	推荐
-GitHub Branch Source Plugin	推荐
-Dingding Notification Plugin	可选
-Slack Notification Plugin	可选
-安装完成后重启 Jenkins
+### 第 2 部分：复制以下内容（安装 Jenkins 插件）
 
-方式二：使用插件管理器 CLI
-bash
+```markdown
+---
+
+## <span id="install-plugins">2️⃣ 安装 Jenkins 插件</span>
+
+### 方式一：通过 Jenkins 管理界面
+
+1. 打开 Jenkins → **管理 Jenkins** → **插件管理**
+2. 切换到 **可选插件** 选项卡
+3. 搜索并安装以下插件：
+
+| 插件名称 | 必需 |
+|----------|------|
+| **Allure Jenkins Plugin** | ✅ 是 |
+| **HTML Publisher Plugin** | ✅ 是 |
+| **Email Extension Plugin** | ✅ 是 |
+| **Pipeline** | ✅ 是 |
+| **Git** | ✅ 是 |
+| **GitHub Integration Plugin** | 推荐 |
+| **GitHub Branch Source Plugin** | 推荐 |
+| **Dingding Notification Plugin** | 可选 |
+| **Slack Notification Plugin** | 可选 |
+
+4. 安装完成后重启 Jenkins
+
+### 方式二：使用插件管理器 CLI
+
+```bash
 # 下载插件管理器
 wget https://github.com/jenkinsci/plugin-installation-manager-tool/releases/latest/download/jenkins-plugin-manager-2.12.11.jar
 
@@ -104,128 +115,109 @@ wget https://github.com/jenkinsci/plugin-installation-manager-tool/releases/late
 java -jar jenkins-plugin-manager-2.12.11.jar \
   --plugin-file jenkins_plugins.txt \
   --war /usr/share/jenkins/jenkins.war
-<span id="configure-job">3️⃣ 配置 Jenkins 任务</span>
-步骤 1：新建 Pipeline 任务
-打开 Jenkins 首页
 
-点击 新建任务
 
-输入任务名称：pytest-api-framework
 
-选择 Pipeline
+### 第 3 部分：复制以下内容（配置 Jenkins 任务）
 
-点击 确定
+```markdown
+---
 
-步骤 2：配置 Pipeline
-方式 A：从 SCM 加载（推荐）
+## <span id="configure-job">3️⃣ 配置 Jenkins 任务</span>
 
-在任务配置页面，找到 Pipeline 部分
+### 步骤 1：新建 Pipeline 任务
 
-Definition 选择：Pipeline script from SCM
+1. 打开 Jenkins 首页
+2. 点击 **新建任务**
+3. 输入任务名称：`pytest-api-framework`
+4. 选择 **Pipeline**
+5. 点击 **确定**
 
-SCM 选择：Git
+### 步骤 2：配置 Pipeline
 
-配置 Git 仓库：
+**方式 A：从 SCM 加载（推荐）**
 
-Repository URL：git@github.com:chaselzha/pytest-api-framework.git
+1. 在任务配置页面，找到 **Pipeline** 部分
+2. **Definition** 选择：`Pipeline script from SCM`
+3. **SCM** 选择：`Git`
+4. 配置 Git 仓库：
+   - **Repository URL**：`git@github.com:chaselzha/pytest-api-framework.git`
+   - **Credentials**：选择已配置的 SSH 密钥（或点击添加）
+   - **Branches to build**：`*/main`
+5. **Script Path**：`Jenkinsfile`
+6. 点击 **保存**
 
-Credentials：选择已配置的 SSH 密钥（或点击添加）
+**方式 B：直接输入脚本**
 
-Branches to build：*/main
+1. 在任务配置页面，找到 **Pipeline** 部分
+2. **Definition** 选择：`Pipeline script`
+3. 在 Script 框中粘贴 `Jenkinsfile` 的内容
+4. 点击 **保存**
 
-Script Path：Jenkinsfile
+### 步骤 3：配置构建参数
 
-点击 保存
-
-方式 B：直接输入脚本
-
-在任务配置页面，找到 Pipeline 部分
-
-Definition 选择：Pipeline script
-
-在 Script 框中粘贴 Jenkinsfile 的内容
-
-点击 保存
-
-步骤 3：配置构建参数
 Jenkinsfile 已包含以下参数，会自动显示在构建页面：
 
-参数	类型	默认值	说明
-BRANCH	String	main	Git 分支
-COMMIT	String	(空)	Git Commit ID
-TEST_MARKER	Choice	all	测试标记
-SKIP_INSTALL	Boolean	false	跳过依赖安装
-DEPLOY_REPORT	Boolean	false	是否部署报告
-<span id="configure-credentials">4️⃣ 配置凭证</span>
-配置 GitHub SSH 密钥
-Jenkins → 管理 Jenkins → 凭证
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `BRANCH` | String | `main` | Git 分支 |
+| `COMMIT` | String | (空) | Git Commit ID |
+| `TEST_MARKER` | Choice | `all` | 测试标记 |
+| `SKIP_INSTALL` | Boolean | `false` | 跳过依赖安装 |
+| `DEPLOY_REPORT` | Boolean | `false` | 是否部署报告 |
+---
 
-点击 系统 → 全局凭证 → 添加凭证
+## <span id="configure-credentials">4️⃣ 配置凭证</span>
 
-选择 Kind：SSH Username with private key
+### 配置 GitHub SSH 密钥
 
-填写信息：
+1. Jenkins → **管理 Jenkins** → **凭证**
+2. 点击 **系统** → **全局凭证** → **添加凭证**
+3. 选择 **Kind**：`SSH Username with private key`
+4. 填写信息：
+   - **ID**：`github-ssh-key`
+   - **Description**：`GitHub SSH Key`
+   - **Username**：`git`
+   - **Private Key**：粘贴 GitHub 私钥（`~/.ssh/id_rsa`）
+5. 点击 **创建**
 
-ID：github-ssh-key
+### 配置 GitHub Token（备用）
 
-Description：GitHub SSH Key
+1. Jenkins → **管理 Jenkins** → **凭证**
+2. 点击 **系统** → **全局凭证** → **添加凭证**
+3. 选择 **Kind**：`Secret text`
+4. 填写信息：
+   - **Secret**：粘贴 GitHub Personal Access Token
+   - **ID**：`github-token`
+   - **Description**：`GitHub Token`
+5. 点击 **创建**
 
-Username：git
+### 配置邮件服务器
 
-Private Key：粘贴 GitHub 私钥（~/.ssh/id_rsa）
+1. Jenkins → **管理 Jenkins** → **系统配置**
+2. 找到 **邮件通知** / **E-mail Notification**
+3. 配置：
+   - **SMTP 服务器**：`smtp.gmail.com`（或其他邮件服务器）
+   - **默认后缀**：`@example.com`
+   - **用户名**：`your-email@gmail.com`
+   - **密码**：`your-app-password`
+   - **SSL/TLS**：勾选 `Use SSL`
+   - **端口**：`465`
+4. 点击 **保存**
+---
 
-点击 创建
+## <span id="trigger-build">5️⃣ 触发构建</span>
 
-配置 GitHub Token（备用）
-Jenkins → 管理 Jenkins → 凭证
+### 方式一：手动触发
 
-点击 系统 → 全局凭证 → 添加凭证
+1. 打开 Jenkins 任务页面
+2. 点击 **Build with Parameters**
+3. 选择参数值
+4. 点击 **Build**
 
-选择 Kind：Secret text
+### 方式二：API 触发
 
-填写信息：
-
-Secret：粘贴 GitHub Personal Access Token
-
-ID：github-token
-
-Description：GitHub Token
-
-点击 创建
-
-配置邮件服务器
-Jenkins → 管理 Jenkins → 系统配置
-
-找到 邮件通知 / E-mail Notification
-
-配置：
-
-SMTP 服务器：smtp.gmail.com（或其他邮件服务器）
-
-默认后缀：@example.com
-
-用户名：your-email@gmail.com
-
-密码：your-app-password
-
-SSL/TLS：勾选 Use SSL
-
-端口：465
-
-点击 保存
-
-<span id="trigger-build">5️⃣ 触发构建</span>
-方式一：手动触发
-打开 Jenkins 任务页面
-
-点击 Build with Parameters
-
-选择参数值
-
-点击 Build
-
-方式二：API 触发
-bash
+```bash
 # 触发构建
 curl -X POST \
   "https://jenkins.example.com/job/pytest-api-framework/buildWithParameters" \
@@ -233,8 +225,8 @@ curl -X POST \
   --data-urlencode "BRANCH=main" \
   --data-urlencode "TEST_MARKER=smoke" \
   --data-urlencode "DEPLOY_REPORT=false"
+
 方式三：使用脚本触发
-bash
 # 设置环境变量
 export JENKINS_URL="https://jenkins.example.com"
 export JENKINS_USER="your-username"
@@ -244,6 +236,7 @@ export TEST_MARKER="smoke"
 
 # 执行触发脚本
 ./scripts/jenkins_trigger.sh
+
 方式四：GitHub Webhook 触发
 在 Jenkins 任务配置中，勾选 GitHub hook trigger for GITScm polling
 
@@ -257,62 +250,59 @@ Events：Just the push event
 
 保存设置
 
-<span id="view-reports">6️⃣ 查看报告</span>
-Allure 报告（推荐）
-打开 Jenkins 构建页面
 
-在构建历史中点击构建编号
+### 第 6 部分：复制以下内容（查看报告）
 
-点击 Allure Report 链接
+```markdown
+---
 
-查看详细测试报告
+## <span id="view-reports">6️⃣ 查看报告</span>
 
-报告内容：
+### Allure 报告（推荐）
 
-测试用例总数、通过率
+1. 打开 Jenkins 构建页面
+2. 在构建历史中点击构建编号
+3. 点击 **Allure Report** 链接
+4. 查看详细测试报告
 
-测试分类（Epic/Feature/Story）
+**报告内容**：
+- 测试用例总数、通过率
+- 测试分类（Epic/Feature/Story）
+- 测试严重性分布
+- 失败用例详情
+- 测试执行时间
 
-测试严重性分布
+### HTML 报告
 
-失败用例详情
+1. 打开 Jenkins 构建页面
+2. 点击 **Pytest HTML 报告** 链接
+3. 查看测试结果
 
-测试执行时间
+### 日志文件
 
-HTML 报告
-打开 Jenkins 构建页面
+1. 打开 Jenkins 构建页面
+2. 点击 **控制台输出**
+3. 查看详细执行日志
 
-点击 Pytest HTML 报告 链接
+### 归档工件
 
-查看测试结果
+1. 打开 Jenkins 构建页面
+2. 点击 **Artifacts** 链接
+3. 下载以下文件：
+   - `allure-results/` - Allure 原始数据
+   - `allure-report/` - Allure 报告
+   - `reports/report.html` - HTML 报告
+   - `logs/` - 日志文件
 
-日志文件
-打开 Jenkins 构建页面
+---
 
-点击 控制台输出
+## <span id="notifications">7️⃣ 通知配置</span>
 
-查看详细执行日志
+### 邮件通知
 
-归档工件
-打开 Jenkins 构建页面
-
-点击 Artifacts 链接
-
-下载以下文件：
-
-allure-results/ - Allure 原始数据
-
-allure-report/ - Allure 报告
-
-reports/report.html - HTML 报告
-
-logs/ - 日志文件
-
-<span id="notifications">7️⃣ 通知配置</span>
-邮件通知
 Jenkinsfile 中已配置邮件通知：
 
-groovy
+```groovy
 emailext(
     subject: "✅ Jenkins 构建成功: ${env.JOB_NAME} - #${env.BUILD_NUMBER}",
     body: """
@@ -330,8 +320,6 @@ emailext(
 
 钉钉通知（可选）
 安装钉钉插件后，添加以下配置：
-
-groovy
 dingtalk(
     robot: 'default',
     type: 'markdown',
@@ -344,26 +332,18 @@ dingtalk(
         > **查看**: ${env.BUILD_URL}
     """
 )
-企业微信通知（可选）
-groovy
-wechatWork(
-    webhookUrl: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx',
-    msgType: 'markdown',
-    content: """
-        ## ✅ 构建成功
-        > 项目: ${env.JOB_NAME}
-        > 构建: #${env.BUILD_NUMBER}
-        > 分支: ${params.BRANCH}
-        > [查看详情](${env.BUILD_URL})
-    """
-)
-<span id="faq-jenkins">❓ 常见问题</span>
-Q1: Allure 报告未生成
-错误：allure: command not found
 
-解决：
+---
 
-bash
+## <span id="faq-jenkins">❓ 常见问题</span>
+
+### Q1: Allure 报告未生成
+
+**错误**：`allure: command not found`
+
+**解决**：
+
+```bash
 # 检查 Allure 是否安装
 allure --version
 
@@ -376,12 +356,11 @@ sudo apt-get install allure
 
 # 检查 Jenkins 中 Allure 插件是否安装
 # 管理 Jenkins → 插件管理 → 已安装
+
 Q2: 无法拉取 GitHub 代码
 错误：Permission denied (publickey)
 
 解决：
-
-bash
 # 测试 SSH 连接
 ssh -T git@github.com
 
@@ -391,6 +370,7 @@ cat ~/.ssh/id_rsa.pub
 
 # 将公钥添加到 GitHub
 # GitHub → Settings → SSH and GPG keys → New SSH Key
+
 Q3: 邮件通知未发送
 错误：Failed to send email
 
@@ -414,8 +394,6 @@ Q4: 构建参数未生效
 检查参数名称拼写
 
 在 Pipeline 开始处打印参数值调试
-
-groovy
 pipeline {
     stages {
         stage('Debug') {
@@ -426,30 +404,27 @@ pipeline {
         }
     }
 }
+
 Q5: 构建超时
 问题：长时间运行导致构建超时
 
 解决：添加超时配置
-
-groovy
 options {
     timeout(time: 30, unit: 'MINUTES')
 }
+
 Q6: 并行构建冲突
 问题：多个构建同时运行时产生冲突
 
 解决：禁用并发构建
-
-groovy
 options {
     disableConcurrentBuilds()
 }
+
 Q7: 依赖安装失败
 问题：pip install 超时或失败
 
 解决：
-
-groovy
 stage('环境准备') {
     steps {
         sh '''
@@ -458,12 +433,11 @@ stage('环境准备') {
         '''
     }
 }
+
 Q8: 构建历史过多
 问题：构建历史占用大量磁盘空间
 
 解决：配置构建保留策略
-
-groovy
 properties([
     buildDiscarder(
         logRotator(
@@ -473,6 +447,7 @@ properties([
         )
     )
 ])
+
 📞 获取帮助
 Jenkins 文档：https://www.jenkins.io/doc/
 
@@ -480,4 +455,5 @@ Allure 文档：https://allurereport.org/docs/
 
 项目 GitHub：https://github.com/chaselzha/pytest-api-framework
 
-Happy Testing! 🚀
+
+
