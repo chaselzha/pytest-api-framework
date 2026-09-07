@@ -11,22 +11,22 @@
 
 ## 📋 目录
 
-- [项目简介](#-项目简介)
-- [技术栈](#-技术栈)
-- [项目结构](#-项目结构)
-- [快速开始](#-快速开始)
-- [运行测试](#-运行测试)
-- [测试报告](#-测试报告)
-- [环境配置](#-环境配置)
-- [CI/CD 集成](#-cicd-集成)
-- [优化特性](#-优化特性)
-- [常见问题](#-常见问题)
-- [贡献指南](#-贡献指南)
-- [许可证](#-许可证)
+- [项目简介](#project-intro)
+- [技术栈](#tech-stack)
+- [项目结构](#project-structure)
+- [快速开始](#quick-start)
+- [运行测试](#run-tests)
+- [测试报告](#test-reports)
+- [环境配置](#env-config)
+- [CI/CD 集成](#cicd-integration)
+- [优化特性](#features)
+- [常见问题](#faq)
+- [贡献指南](#contributing)
+- [许可证](#license)
 
 ---
 
-## 📖 项目简介
+## <span id="project-intro">📖 项目简介</span>
 
 这是一个功能完备的 **API 自动化测试框架**，专为 RESTful API 接口测试设计。框架提供了完整的测试生命周期管理，从接口请求、数据校验、日志记录到报告生成，一站式解决方案。
 
@@ -47,7 +47,7 @@
 
 ---
 
-## 🛠️ 技术栈
+## <span id="tech-stack">🛠️ 技术栈</span>
 
 | 组件 | 版本 | 用途 |
 |------|------|------|
@@ -63,7 +63,7 @@
 
 ---
 
-## 📁 项目结构
+## <span id="project-structure">📁 项目结构</span>
 pytest-api-framework/
 ├── .github/workflows/ # GitHub Actions CI/CD
 │ └── test.yml
@@ -102,16 +102,17 @@ pytest-api-framework/
 ├── Jenkinsfile # Jenkins Pipeline
 └── README.md # 项目说明
 
+text
+
 ---
 
-## 🚀 快速开始
+## <span id="quick-start">🚀 快速开始</span>
 
 ### 1. 克隆项目
 
 ```bash
 git clone git@github.com:chaselzha/pytest-api-framework.git
 cd pytest-api-framework
-
 2. 创建虚拟环境
 bash
 python -m venv .venv
@@ -142,7 +143,7 @@ pytest tests/ -m smoke -v
 
 # 运行指定测试文件
 pytest tests/test_jsonplaceholder_api.py -v
-📊 运行测试
+<span id="run-tests">📊 运行测试</span>
 基本命令
 命令	说明
 pytest tests/ -v	运行所有测试（详细输出）
@@ -183,7 +184,7 @@ python run_allure.py --list
 
 # 清理所有数据（慎用）
 python run_allure.py --clean-all
-📈 测试报告
+<span id="test-reports">📈 测试报告</span>
 Allure 报告（推荐）
 Allure 提供美观的测试报告，支持历史追踪、分类统计、步骤详情。
 
@@ -214,18 +215,25 @@ logs/
 ├── api_test_2026-09-07_22-30-45.log
 ├── api_test_2026-09-07_23-15-20.log
 └── api_error_2026-09-07_22-30-45.log
-🌍 环境配置
-多环境支持
-框架支持 3 种环境，通过 API_ENV 环境变量切换：
+text
 
-环境	变量	说明
-测试环境	API_ENV=test	默认，用于 CI/CD
-开发环境	API_ENV=dev	用于本地开发
-生产环境	API_ENV=prod	谨慎使用
-配置方式
-方式一：.env 文件
+## <span id="env-config">🌍 环境配置</span>
 
-env
+### 多环境支持
+
+框架支持 3 种环境，通过 `API_ENV` 环境变量切换：
+
+| 环境 | 变量 | 说明 |
+|------|------|------|
+| **测试环境** | `API_ENV=test` | 默认，用于 CI/CD |
+| **开发环境** | `API_ENV=dev` | 用于本地开发 |
+| **生产环境** | `API_ENV=prod` | 谨慎使用 |
+
+### 配置方式
+
+**方式一：.env 文件**
+
+```env
 API_ENV=test
 TEST_BASE_URL=https://jsonplaceholder.typicode.com
 REQUEST_TIMEOUT=30
@@ -239,7 +247,7 @@ API_ENV=dev pytest tests/ -v
 python
 # config/settings.py
 ENV = "test"  # 默认值
-🔄 CI/CD 集成
+<span id="cicd-integration">🔄 CI/CD 集成</span>
 GitHub Actions
 项目已配置 GitHub Actions 工作流，每次推送代码自动运行测试。
 
@@ -275,7 +283,7 @@ chmod +x scripts/local_ci.sh
 
 # 运行本地 CI
 ./scripts/local_ci.sh
-✨ 优化特性
+<span id="features">✨ 优化特性</span>
 1. 数据脱敏
 敏感信息自动脱敏，保护数据安全：
 
@@ -305,7 +313,7 @@ text
 reports/errors/test_name_20260907_220530/
 ├── request.json
 └── response.json
-❓ 常见问题
+<span id="faq">❓ 常见问题</span>
 1. 测试连接失败
 问题：连接 test-api.example.com 失败
 
@@ -357,7 +365,7 @@ pip install -r requirements.txt --no-cache-dir
 
 查看 Actions 日志定位具体错误
 
-🤝 贡献指南
+<span id="contributing">🤝 贡献指南</span>
 欢迎贡献代码、提出 Issue 或提交 Pull Request！
 
 贡献流程
@@ -380,11 +388,11 @@ Fork 本仓库
 
 确保所有测试通过
 
-📄 许可证
+<span id="license">📄 许可证</span>
 本项目采用 MIT 许可证。详见 LICENSE 文件。
 
 📞 联系方式
-作者：Chasel Zha
+作者：Chasel Zhao
 
 GitHub：chaselzha
 
@@ -392,4 +400,5 @@ GitHub：chaselzha
 
 ⭐ 支持
 如果这个项目对你有帮助，请给个 Star ⭐ 支持一下！
+
 
