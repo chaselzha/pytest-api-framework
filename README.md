@@ -6,7 +6,6 @@
 [![Pytest](https://img.shields.io/badge/Pytest-7.4.3-green)](https://docs.pytest.org/)
 [![Allure](https://img.shields.io/badge/Allure-2.29.0-orange)](https://allurereport.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3.3-lightblue)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
 
@@ -24,7 +23,6 @@
 - [CI/CD 集成](#cicd-integration)
 - [常见问题](#faq)
 - [贡献指南](#contributing)
-- [许可证](#license)
 
 ---
 
@@ -542,15 +540,9 @@ python -c "from web.app import app; from web.models import db; with app.app_cont
 
 ---
 
-## <span id="license">📄 许可证</span>
-
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
----
-
 ## 📞 联系方式
 
-- **作者**：Chasel Zha
+- **作者**：Chasel Zhao
 - **GitHub**：[chaselzha](https://github.com/chaselzha)
 - **项目地址**：[pytest-api-framework](https://github.com/chaselzha/pytest-api-framework)
 
