@@ -25,3 +25,12 @@ __pycache__/
 .env
 .env.local
 .env.*.local
+
+# Allure 报告
+allure-results/
+allure-report/
+
+# Web 应用缓存
+web/__pycache__/
+web/routes/__pycache__/
+web/services/__pycache__/
